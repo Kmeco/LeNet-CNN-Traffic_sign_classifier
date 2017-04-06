@@ -17,11 +17,14 @@ This project has the following steps:
 [image1]: ./images/histogram_train.png "Training data histogram"
 [image2]: ./images/histogram_valid.png "Validation data histogram"
 [image3]: ./images/histogram_test.png "Test data histogram"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image4]: ./images/example_raw.png "Raw RGB - as loaded"
+[image5]: ./images/example_norm.png "Images after normalization and grayscaling"
+[image6]: ./images/vertically_or_horizontally.png "vertically or horizontally flipable"
+[image7]: ./images/vertically_and_horizontally.png "vertically and horizontally flipable"
+[image8]: ./images/180.png "180 roattion invariant"
+[image9]: ./images/class_change.png "class change"
+
+
 
 ## Rubric Points
 Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) of the project individually and describe how I addressed each point in my implementation.  
@@ -52,39 +55,38 @@ Here are three bar charts showing the data distribution across the classes. We c
 
 ##### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-I first tested the images in full RGB with 3 channels and compared the network accuracy performance to a grayscale dataset. There was no significant drop in accuracy, but the training time decreased which is why I decided to use grayscale in the final model.
+I first tested the images in full RGB with 3 channels and compared the network accuracy performance to a grayscale dataset. There was no significant drop in accuracy, but the training time decreased which is why I decided to use grayscale in the final model. All of the images were also normalized to the range (0, 1). The resulting mean was closer to zero which improves training.
 
-Here is an example of a traffic sign image before and after grayscaling.
+Here is an example of a traffic sign image before and after grayscaling and normalization.
 
-![alt text][image2]
+![Raw_images][image4]
+![Processed_images][image5]
 
-As a last step, I normalized the image data because ...
+To add more data to the data set, I used the symmetry of certain instances. There were 5 different cases:
+(I found this technique in this [blog](http://navoshta.com/traffic-signs-classification/))
 
-I decided to generate additional data because ...
+* vertically or horizontally symmetric
+![v&h][image6]
+* both vertically and horizontally
+![v or h][image7]
+* 180 rotation invariant
+![180][image8]
+* class change after flipping
+![class change][image9]
 
-To add more data to the the data set, I used the following techniques because ...
 
-Here is an example of an original image and an augmented image:
-
-![alt text][image3]
-
-The difference between the original data set and the augmented data set is the following ...
-
-
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+#### 2. Describe what your final model architecture looks like (including model type, layers, layer sizes, connectivity, etc.)
 
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					|
 |:---------------------:|:---------------------------------------------:|
-| Input         		| 32x32x3 RGB image   							|
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
-| RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
+| Input         		| 32x32x1 image   							|
+| Convolution 5x5, RELU    	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6				|
+| Convolution 5x5, RELU    | 1x1 stride, valid padding, outputs 10x10x16   									|
+| Max pooling			| 2x2 stride,  outputs 5x5x16       									|
+|				Convolution 5x5, RELU		|	1x1 stride, valid padding, outputs 1x1x400										|
 |						|												|
 
 
